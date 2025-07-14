@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANCHESTER WARES NIGERIA - Official Manchester United Merchandise</title>
+    <meta name="description" content="Your trusted source for authentic Manchester United merchandise in Nigeria. MANCHESTER WARES NIGERIA offers jerseys, training gear, accessories and more.">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#dc2626">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="MANCHESTER WARES NIGERIA">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Offline Banner -->
+    <div id="offline-banner" class="offline-banner hidden">
+        <i class="fas fa-wifi"></i>
+        You're offline. Some features may be limited.
+    </div>
+
+    <!-- Install PWA Banner -->
+    <div id="install-banner" class="install-banner hidden">
+        <div class="install-content">
+            <span>Install MUFC Store app for better experience!</span>
+            <div class="install-actions">
+                <button id="install-btn" class="btn btn-outline">Install</button>
+                <button id="dismiss-install" class="btn btn-ghost">×</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo -->
+                <div class="logo">
+                    <img src="https://i.pinimg.com/736x/dc/ac/67/dcac670b489dbbebc1cf46bbc60d95c0.jpg" alt="MUFC Logo" class="logo-img">
+                    <span class="logo-text">MANCHESTER WARES NIGERIA</span>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="nav">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#catalog" class="nav-link">Catalog</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </nav>
+
+                <!-- User Actions -->
+                <div class="user-actions">
+                    <button id="search-btn" class="action-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button id="wishlist-btn" class="action-btn">
+                        <i class="fas fa-heart"></i>
+                        <span id="wishlist-count" class="count-badge">0</span>
+                    </button>
+                    <button id="cart-btn" class="action-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count" class="count-badge">0</span>
+                    </button>
+                    <button id="account-btn" class="action-btn">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <button id="menu-toggle" class="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <!-- Hero Section -->
+            <div class="hero">
+                <div class="hero-bg"></div>
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <h1 class="hero-title animate-fade-in">MANCHESTER WARES NIGERIA</h1>
+                    <p class="hero-subtitle animate-fade-in-delay">
+    Your premier destination for authentic Manchester United merchandise in Nigeria. 
+    Support the Red Devils with official gear and exclusive collections.
+</p>
+                    <button class="btn btn-primary btn-lg animate-fade-in-delay-2" onclick="showSection('catalog')">
+                        Shop Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Featured Products -->
+            <div class="featured-section">
+                <div class="container">
+                    <h2 class="section-title">Featured Products</h2>
+                    <div id="featured-products" class="products-grid">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="categories-section">
+                <div class="container">
+                    <h2 class="section-title">Shop by Category</h2>
+                    <div class="categories-grid">
+                        <div class="category-card" onclick="filterProducts('jerseys')">
+                            <img src="https://i.pinimg.com/736x/dd/2f/0b/dd2f0becc75596c3e2e3827006f305c7.jpg" alt="Jerseys">
+                            <h3>Jerseys</h3>
+                        </div>
+                        <div class="category-card" onclick="filterProducts('training')">
+                            <img src="https://i.pinimg.com/736x/80/07/2e/80072e9464208d24e7b5fb4f8aa664f1.jpg" alt="Training Gear">
+                            <h3>Training Gear</h3>
+                        </div>
+                        <div class="category-card" onclick="filterProducts('accessories')">
+                            <img src="https://i.pinimg.com/736x/5e/e3/af/5ee3af1f249b02372e9104a951e13a12.jpg" alt="Accessories">
+                            <h3>Accessories</h3>
+                        </div>
+                        <div class="category-card" onclick="filterProducts('footwear')">
+                            <img src="https://i.pinimg.com/736x/6f/ce/3a/6fce3a2760bbb23aeb8f9cc1ddf2cf6c.jpg" alt="Footwear">
+                            <h3>Footwear</h3>
+                        </div>
+                        <div class="category-card" onclick="filterProducts('kids')">
+                            <img src="https://i.pinimg.com/736x/16/70/88/167088e0e0458b684ac9b32e1b81328d.jpg" alt="Kids Collection">
+                            <h3>Kids Collection</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="features-section">
+                <div class="container">
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <h3>Free Shipping</h3>
+                            <p>Free delivery across all 36 states in Nigeria</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h3>Authentic Guarantee</h3>
+                            <p>100% genuine Manchester United merchandise</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-undo"></i>
+                            </div>
+                            <h3>14-Day Returns</h3>
+                            <p>Easy returns within 14 days of purchase</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Catalog Section -->
+        <section id="catalog" class="section">
+            <div class="container">
+                <div class="catalog-header">
+                    <h1>Product Catalog</h1>
+                    <div class="catalog-filters">
+                        <select id="category-filter">
+                            <option value="">All Categories</option>
+                            <option value="jerseys">Jerseys</option>
+                            <option value="training">Training Gear</option>
+                            <option value="accessories">Accessories</option>
+                            <option value="footwear">Footwear</option>
+                            <option value="kids">Kids Collection</option>
+                        </select>
+                        <select id="sort-filter">
+                            <option value="name">Sort by Name</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Highest Rated</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="products-grid" class="products-grid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="container">
+                <h1>About MANCHESTER WARES NIGERIA</h1>
+                <div class="about-content">
+                    <div class="about-text">
+                        <h2>Your Premier Source for Authentic Manchester United Merchandise</h2>
+                        <p>
+    Welcome to MANCHESTER WARES NIGERIA! We are passionate Red Devils fans 
+    dedicated to bringing you 100% authentic Manchester United merchandise right to your doorstep.
+</p>
+                        <p>
+                            From the latest home and away jerseys to training gear, accessories, and exclusive collections, 
+                            we stock everything you need to show your support for the greatest football club in the world.
+                        </p>
+                        <div class="about-features">
+                            <div class="about-feature">
+                                <i class="fas fa-certificate"></i>
+                                <span>100% Authentic Products</span>
+                            </div>
+                            <div class="about-feature">
+                                <i class="fas fa-shipping-fast"></i>
+                                <span>Fast Delivery Nationwide</span>
+                            </div>
+                            <div class="about-feature">
+                                <i class="fas fa-customer-service"></i>
+                                <span>Excellent Customer Service</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-image">
+                        <img src="https://i.pinimg.com/736x/dc/ac/67/dcac670b489dbbebc1cf46bbc60d95c0.jpg" alt="Manchester United">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="container">
+                <h1>Contact Us</h1>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h2>Get in Touch</h2>
+                        <p>Have questions about our products or need assistance with your order? We're here to help!</p>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h3>Phone</h3>
+                                <p>+234 9122977491</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h3>Email</h3>
+                                <p>support@manchesterwaresnigeria.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h3>Address</h3>
+                                <p>11, Onourah close, fagba, Ikeja Way, Lagos State, Nigeria</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form class="contact-form" id="contact-form">
+                        <h2>Send us a Message</h2>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Account Modal -->
+    <div id="account-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Account</h2>
+                <button class="modal-close" onclick="closeModal('account-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form">
+                    <h3>Sign In</h3>
+                    <form id="login-form-element">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="remember-me">
+                                <span class="checkmark"></span>
+                                Remember me
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                    </form>
+                    <div class="auth-links">
+                        <a href="#" onclick="showRegisterForm()">Don't have an account? Sign up</a>
+                        <a href="#" onclick="showForgotPassword()">Forgot password?</a>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form hidden">
+                    <h3>Create Account</h3>
+                    <form id="register-form-element">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="register-firstname">First Name</label>
+                                <input type="text" id="register-firstname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="register-lastname">Last Name</label>
+                                <input type="text" id="register-lastname" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-phone">Phone Number</label>
+                            <input type="tel" id="register-phone" placeholder="+234 xxx xxx xxxx" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password</label>
+                            <input type="password" id="register-password" required>
+                            <div class="password-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill"></div>
+                                </div>
+                                <span class="strength-text">Password strength</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-confirm-password">Confirm Password</label>
+                            <input type="password" id="register-confirm-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="agree-terms" required>
+                                <span class="checkmark"></span>
+                                I agree to the Terms & Conditions
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="newsletter-signup">
+                                <span class="checkmark"></span>
+                                Subscribe to newsletter for exclusive offers
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                    </form>
+                    <div class="auth-links">
+                        <a href="#" onclick="showLoginForm()">Already have an account? Sign in</a>
+                    </div>
+                </div>
+
+                <!-- User Dashboard -->
+                <div id="user-dashboard" class="user-dashboard hidden">
+                    <div class="dashboard-header">
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-details">
+                                <h3 id="user-name">John Doe</h3>
+                                <p id="user-email">john@example.com</p>
+                                <span class="user-badge">Red Devil Member</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline" onclick="logout()">Sign Out</button>
+                    </div>
+                    
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>5</h4>
+                                <p>Total Orders</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>250</h4>
+                                <p>Loyalty Points</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="dashboard-wishlist-count">0</h4>
+                                <p>Wishlist Items</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-actions">
+                        <button class="dashboard-btn" onclick="showOrders()">
+                            <i class="fas fa-list"></i>
+                            View Orders
+                        </button>
+                        <button class="dashboard-btn" onclick="showWishlist()">
+                            <i class="fas fa-heart"></i>
+                            My Wishlist
+                        </button>
+                        <button class="dashboard-btn" onclick="showProfile()">
+                            <i class="fas fa-user-edit"></i>
+                            Edit Profile
+                        </button>
+                        <button class="dashboard-btn" onclick="showAddresses()">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Addresses
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Shopping Cart</h2>
+                <button class="modal-close" onclick="closeModal('cart-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="cart-items" class="cart-items">
+                    <!-- Cart items will be loaded here -->
+                </div>
+                <div id="cart-empty" class="cart-empty hidden">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Your cart is empty</h3>
+                    <p>Add some items to get started!</p>
+                    <button class="btn btn-primary" onclick="closeModal('cart-modal'); showSection('catalog')">
+                        Start Shopping
+                    </button>
+                </div>
+                <div id="cart-summary" class="cart-summary hidden">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="cart-subtotal">₦0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping:</span>
+                        <span id="cart-shipping">₦2,500</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span id="cart-total">₦0</span>
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="proceedToCheckout()">
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="product-modal-title">Product Details</h2>
+                <button class="modal-close" onclick="closeModal('product-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="product-details" class="product-details">
+                    <!-- Product details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification hidden">
+        <div class="notification-content">
+            <i id="notification-icon" class="fas fa-check-circle"></i>
+            <span id="notification-message">Notification message</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MANCHESTER WARES NIGERIA</h3>
+                    <p>Your premier destination for authentic Manchester United merchandise in Nigeria.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="#" onclick="filterProducts('jerseys')">Jerseys</a></li>
+                        <li><a href="#" onclick="filterProducts('training')">Training Gear</a></li>
+                        <li><a href="#" onclick="filterProducts('accessories')">Accessories</a></li>
+                        <li><a href="#" onclick="filterProducts('kids')">Kids Collection</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#" onclick="showSection('contact')">Contact Us</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-phone"></i> +234 9122977491</p>
+                        <p><i class="fas fa-envelope"></i> support@manchesterwaresnigeria.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Lagos, Nigeria</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MUFC Nigeria. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
