@@ -4,7 +4,6 @@ let isOnline = navigator.onLine
 let currentSection = "home"
 let filteredProducts = []
 let selectedProduct = null
-const products = [] // Declare products variable
 let currentUser = null // Declare currentUser variable
 let cart = [] // Declare cart variable
 let wishlist = [] // Declare wishlist variable
@@ -67,6 +66,9 @@ function initializeApp() {
   // Load cart and wishlist
   cart = getFromLocalStorage("manchester-wares-cart") || []
   wishlist = getFromLocalStorage("manchester-wares-wishlist") || []
+
+  // Initialize product filters
+  filteredProducts = Array.isArray(products) ? [...products] : []
 
   // Set active section
   showSection("home")
