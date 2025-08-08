@@ -10,7 +10,13 @@ let wishlist = [] // Declare wishlist variable
 
 // Helper Functions
 function getFromLocalStorage(key) {
-  return JSON.parse(localStorage.getItem(key))
+  try {
+    const raw = localStorage.getItem(key)
+    if (!raw) return null
+    return JSON.parse(raw)
+  } catch (e) {
+    return null
+  }
 }
 
 function saveToLocalStorage(key, value) {
@@ -143,7 +149,7 @@ function setupPWA() {
   // Register service worker
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker
-      .register("sw.js")
+      .register("/sw.js")
       .then((registration) => {
         console.log("SW registered: ", registration)
       })
@@ -160,9 +166,7 @@ function setupPWA() {
   })
 
   // Request notification permission
-  if ("Notification" in window && Notification.permission === "default") {
-    Notification.requestPermission()
-  }
+  // Notification permission is requested from user actions elsewhere
 }
 
 function installPWA() {
@@ -580,14 +584,23 @@ function loadCartItems() {
 }
 
 function updateCartQuantity(itemKey, change) {
-  // This is a simplified version - in a real app you'd handle the complex grouping logic
+  const [keyId, keySize = "", keyColor = ""] = itemKey.split("-")
+  const productId = Number.parseInt(keyId)
+
   if (change > 0) {
-    const [productId] = itemKey.split("-")
-    cart.push({ id: Number.parseInt(productId), timestamp: Date.now() })
+    const newItem = {
+      id: productId,
+      ...(keySize ? { size: keySize } : {}),
+      ...(keyColor ? { color: keyColor } : {}),
+      timestamp: Date.now(),
+    }
+    cart.push(newItem)
   } else {
     const index = cart.findIndex((item) => {
       const id = typeof item === "object" ? item.id : item
-      return id.toString() === itemKey.split("-")[0]
+      const size = typeof item === "object" ? item.size || "" : ""
+      const color = typeof item === "object" ? item.color || "" : ""
+      return id === productId && size === keySize && color === keyColor
     })
     if (index > -1) {
       cart.splice(index, 1)
@@ -600,10 +613,15 @@ function updateCartQuantity(itemKey, change) {
 }
 
 function removeFromCart(itemKey) {
-  const [productId] = itemKey.split("-")
+  const [keyId, keySize = "", keyColor = ""] = itemKey.split("-")
+  const productId = Number.parseInt(keyId)
+
   cart = cart.filter((item) => {
     const id = typeof item === "object" ? item.id : item
-    return id.toString() !== productId
+    const size = typeof item === "object" ? item.size || "" : ""
+    const color = typeof item === "object" ? item.color || "" : ""
+    // Remove only items matching the specific group (id+size+color)
+    return !(id === productId && size === keySize && color === keyColor)
   })
 
   saveToLocalStorage("manchester-wares-cart", cart)

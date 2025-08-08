@@ -1,12 +1,18 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 // This would be your actual Paystack secret key in production
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || "sk_test_your_secret_key"
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY
 
 export async function POST(request: NextRequest) {
   try {
+    if (!PAYSTACK_SECRET_KEY) {
+      return NextResponse.json({ success: false, message: "PAYSTACK_SECRET_KEY not configured" }, { status: 500 })
+    }
+
     const body = await request.json()
     const { email, amount, firstName, lastName, phone, metadata } = body
+
+    const origin = request.headers.get("origin") || request.nextUrl.origin
 
     // Initialize payment with Paystack
     const response = await fetch("https://api.paystack.co/transaction/initialize", {
@@ -19,7 +25,7 @@ export async function POST(request: NextRequest) {
         email,
         amount: amount * 100, // Convert to kobo
         currency: "NGN",
-        callback_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/callback`,
+        callback_url: `${origin}/payment/callback`,
         metadata: {
           custom_fields: [
             {

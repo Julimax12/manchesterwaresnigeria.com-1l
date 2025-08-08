@@ -1,9 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || "sk_test_your_secret_key"
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY
 
 export async function GET(request: NextRequest) {
   try {
+    if (!PAYSTACK_SECRET_KEY) {
+      return NextResponse.json({ success: false, message: "PAYSTACK_SECRET_KEY not configured" }, { status: 500 })
+    }
+
     const { searchParams } = new URL(request.url)
     const reference = searchParams.get("reference")
 

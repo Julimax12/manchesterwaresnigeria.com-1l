@@ -59,6 +59,7 @@ export default function HomePage() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
       deferredPrompt = e
+      ;(window as any).deferredPrompt = e
       setShowInstallPrompt(true)
     }
 

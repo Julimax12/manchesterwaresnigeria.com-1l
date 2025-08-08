@@ -161,9 +161,14 @@ export function PWAProvider({ children }: PWAProviderProps) {
       if (permission === "granted" && swRegistration) {
         // Subscribe to push notifications
         try {
+          const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ""
+          if (!publicKey) {
+            console.warn("NEXT_PUBLIC_VAPID_PUBLIC_KEY is not set; skipping push subscription.")
+            return
+          }
           const subscription = await swRegistration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ""),
+            applicationServerKey: urlBase64ToUint8Array(publicKey),
           })
 
           // Send subscription to server
