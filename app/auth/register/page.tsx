@@ -191,12 +191,9 @@ export default function RegisterPage() {
         localStorage.setItem("mufc-auth-token", "demo-token-" + Date.now())
 
         // Show success notification
-        if ("Notification" in window && Notification.permission === "granted") {
-          new Notification("Welcome to MUFC Store!", {
-            body: "Your account has been created successfully. Welcome bonus: 100 loyalty points!",
-            icon: "/icon-192x192.png",
-          })
-        }
+        import("sonner").then(({ toast }) =>
+          toast.success("Your account has been created successfully. Welcome bonus: 100 loyalty points!")
+        )
 
         router.push("/auth/verify-email")
       } else {

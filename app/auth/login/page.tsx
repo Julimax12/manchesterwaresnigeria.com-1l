@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle, Smartphone, Facebook, Chrome } from "lucide-react"
+import { toast } from "sonner"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -88,13 +89,7 @@ export default function LoginPage() {
         localStorage.setItem("mufc-user", JSON.stringify(userData))
         localStorage.setItem("mufc-auth-token", "demo-token-" + Date.now())
 
-        // Show success notification
-        if ("Notification" in window && Notification.permission === "granted") {
-          new Notification("Welcome back!", {
-            body: "You've successfully signed in to MUFC Store",
-            icon: "/icon-192x192.png",
-          })
-        }
+        toast.success("Welcome back! You've successfully signed in to MUFC Store")
 
         // Redirect to intended page or dashboard
         const returnUrl = new URLSearchParams(window.location.search).get("returnUrl")
@@ -105,6 +100,7 @@ export default function LoginPage() {
     } catch (error) {
       console.error("Login error:", error)
       setErrors({ general: "Invalid email or password. Please try again." })
+      toast.error("Invalid email or password. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -113,7 +109,7 @@ export default function LoginPage() {
   const handleSocialLogin = (provider: string) => {
     // In a real app, this would redirect to OAuth provider
     console.log(`Login with ${provider}`)
-    alert(`${provider} login would be implemented here`)
+    toast.info(`${provider} login would be implemented here`)
   }
 
   const handleForgotPassword = () => {
@@ -180,16 +176,17 @@ export default function LoginPage() {
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
+                    className={`pl-10 ${errors.password ? "border-red-500" : ""}`}
                     value={formData.password}
                     onChange={(e) => handleInputChange("password", e.target.value)}
-                    placeholder="Enter your password"
+                    placeholder="Your password"
                     autoComplete="current-password"
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    onClick={() => setShowPassword((s) => !s)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -199,100 +196,51 @@ export default function LoginPage() {
 
               {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="rememberMe"
-                    checked={rememberMe}
-                    onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                  />
-                  <Label htmlFor="rememberMe" className="text-sm cursor-pointer">
-                    Remember me
-                  </Label>
-                </div>
-                <button type="button" onClick={handleForgotPassword} className="text-sm text-red-600 hover:underline">
+                <label className="inline-flex items-center gap-2">
+                  <Checkbox checked={rememberMe} onCheckedChange={(v) => setRememberMe(Boolean(v))} aria-label="Remember me" />
+                  <span className="text-sm text-gray-600">Remember me</span>
+                </label>
+                <button type="button" onClick={handleForgotPassword} className="text-sm text-red-600 hover:underline" aria-label="Forgot password">
                   Forgot password?
                 </button>
               </div>
 
-              {/* Submit Button */}
-              <Button type="submit" size="lg" className="w-full bg-red-600 hover:bg-red-700" disabled={isLoading}>
-                {isLoading ? "Signing In..." : "Sign In"}
+              {/* Submit */}
+              <Button type="submit" className="w-full bg-red-600 hover:bg-red-700" disabled={isLoading}>
+                {isLoading ? "Signing in..." : "Sign In"}
               </Button>
 
-              {/* Social Login */}
-              <div className="space-y-4">
-                <div className="relative">
-                  <Separator />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="bg-white px-2 text-sm text-gray-500">Or continue with</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => handleSocialLogin("Google")}
-                    className="w-full"
-                  >
-                    <Chrome className="h-4 w-4 mr-2" />
-                    Google
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => handleSocialLogin("Facebook")}
-                    className="w-full"
-                  >
-                    <Facebook className="h-4 w-4 mr-2" />
-                    Facebook
-                  </Button>
-                </div>
+              {/* Divider */}
+              <div className="relative py-2">
+                <Separator className="my-4" />
+                <span className="absolute left-1/2 -translate-x-1/2 -top-3 bg-white px-2 text-sm text-gray-500">or continue with</span>
               </div>
 
-              {/* Register Link */}
-              <div className="text-center">
-                <p className="text-gray-600">
-                  Don't have an account?{" "}
-                  <Link href="/auth/register" className="text-red-600 hover:underline font-medium">
-                    Create one here
-                  </Link>
-                </p>
+              {/* Social Login */}
+              <div className="grid grid-cols-2 gap-3">
+                <Button type="button" variant="outline" onClick={() => handleSocialLogin("Google")}>
+                  <Chrome className="h-4 w-4 mr-2" /> Google
+                </Button>
+                <Button type="button" variant="outline" onClick={() => handleSocialLogin("Facebook")}>
+                  <Facebook className="h-4 w-4 mr-2" /> Facebook
+                </Button>
+              </div>
+
+              {/* Security Badge */}
+              <div className="flex items-center justify-center gap-2 text-xs text-gray-500 mt-4">
+                <CheckCircle className="h-4 w-4 text-green-600" />
+                <span>Secured with industry-standard encryption</span>
               </div>
             </form>
           </CardContent>
         </Card>
 
-        {/* PWA Login Benefits */}
-        <Card className="mt-6 border-blue-200 bg-blue-50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Smartphone className="h-5 w-5 text-blue-600" />
-              <div>
-                <h3 className="font-medium text-blue-900">Enhanced PWA Experience</h3>
-                <p className="text-sm text-blue-700">
-                  Sign in to sync your data across devices and enable offline features
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Demo Credentials */}
-        <Card className="mt-4 border-green-200 bg-green-50">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-              <div>
-                <h3 className="font-medium text-green-900">Demo Account</h3>
-                <p className="text-sm text-green-700 mb-2">
-                  Use any email and password to test the login functionality
-                </p>
-                <Badge className="bg-green-100 text-green-800 text-xs">Demo Mode Active</Badge>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* PWA Install Note */}
+        <div className="text-center mt-6">
+          <Badge className="bg-red-100 text-red-700 border border-red-200">
+            <Smartphone className="h-3 w-3 mr-2" /> Install our PWA for faster access
+          </Badge>
+        </div>
       </div>
     </div>
   )

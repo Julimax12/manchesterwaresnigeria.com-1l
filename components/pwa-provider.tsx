@@ -31,6 +31,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
   const [isInstalled, setIsInstalled] = useState(false)
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default")
   const [swRegistration, setSwRegistration] = useState<ServiceWorkerRegistration | null>(null)
+  const [showCameOnline, setShowCameOnline] = useState(false)
 
   useEffect(() => {
     // Check if app is installed
@@ -45,6 +46,8 @@ export function PWAProvider({ children }: PWAProviderProps) {
     // Online/offline status
     const handleOnline = () => {
       setIsOnline(true)
+      setShowCameOnline(true)
+      setTimeout(() => setShowCameOnline(false), 2000)
       // Trigger background sync when coming back online
       if (swRegistration && "sync" in swRegistration) {
         swRegistration.sync.register("cart-sync").catch(console.error)
@@ -158,12 +161,13 @@ export function PWAProvider({ children }: PWAProviderProps) {
       const permission = await Notification.requestPermission()
       setNotificationPermission(permission)
 
-      if (permission === "granted" && swRegistration) {
+      const vapid = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+      if (permission === "granted" && swRegistration && vapid) {
         // Subscribe to push notifications
         try {
           const subscription = await swRegistration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ""),
+            applicationServerKey: urlBase64ToUint8Array(vapid),
           })
 
           // Send subscription to server
@@ -199,7 +203,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
 
       {/* Offline Banner */}
       {!isOnline && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-500 text-white text-center py-2 px-4 flex items-center justify-center gap-2">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-500 text-white text-center py-2 px-4 flex items-center justify-center gap-2" role="status" aria-live="assertive">
           <WifiOff className="h-4 w-4" />
           <span>You're offline. Some features may be limited.</span>
           <Badge variant="secondary" className="bg-yellow-600 text-white">
@@ -209,8 +213,8 @@ export function PWAProvider({ children }: PWAProviderProps) {
       )}
 
       {/* Online Banner (brief) */}
-      {isOnline && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-green-500 text-white text-center py-1 px-4 flex items-center justify-center gap-2 transition-all duration-300">
+      {showCameOnline && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-green-500 text-white text-center py-1 px-4 flex items-center justify-center gap-2 transition-all duration-300" role="status" aria-live="polite">
           <Wifi className="h-4 w-4" />
           <span className="text-sm">Back online</span>
         </div>
@@ -218,7 +222,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
 
       {/* Install PWA Prompt */}
       {showInstallPrompt && !isInstalled && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96">
+        <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96" role="dialog" aria-labelledby="install-title">
           <Card className="border-red-200 bg-red-50">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
@@ -226,7 +230,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
                   <Download className="h-5 w-5 text-red-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium text-red-900 mb-1">Install MUFC Store App</h3>
+                  <h3 id="install-title" className="font-medium text-red-900 mb-1">Install MUFC Store App</h3>
                   <p className="text-sm text-red-700 mb-3">
                     Get faster access, offline browsing, and push notifications!
                   </p>
@@ -239,7 +243,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
                     </Button>
                   </div>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => setShowInstallPrompt(false)} className="text-red-600">
+                <Button size="sm" variant="ghost" onClick={() => setShowInstallPrompt(false)} className="text-red-600" aria-label="Close">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -250,7 +254,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
 
       {/* App Update Prompt */}
       {showUpdatePrompt && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96">
+        <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96" role="dialog" aria-labelledby="update-title">
           <Card className="border-blue-200 bg-blue-50">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
@@ -258,7 +262,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
                   <RefreshCw className="h-5 w-5 text-blue-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium text-blue-900 mb-1">App Update Available</h3>
+                  <h3 id="update-title" className="font-medium text-blue-900 mb-1">App Update Available</h3>
                   <p className="text-sm text-blue-700 mb-3">A new version is ready with improvements and bug fixes.</p>
                   <div className="flex gap-2">
                     <Button size="sm" onClick={updateApp} className="bg-blue-600 hover:bg-blue-700">
@@ -269,7 +273,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
                     </Button>
                   </div>
                 </div>
-                <Button size="sm" variant="ghost" onClick={() => setShowUpdatePrompt(false)} className="text-blue-600">
+                <Button size="sm" variant="ghost" onClick={() => setShowUpdatePrompt(false)} className="text-blue-600" aria-label="Close">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -280,7 +284,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
 
       {/* Notification Permission Prompt */}
       {isInstalled && notificationPermission === "default" && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96">
+        <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96" role="dialog" aria-labelledby="notif-title">
           <Card className="border-purple-200 bg-purple-50">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
@@ -288,7 +292,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
                   <Bell className="h-5 w-5 text-purple-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-medium text-purple-900 mb-1">Enable Notifications</h3>
+                  <h3 id="notif-title" className="font-medium text-purple-900 mb-1">Enable Notifications</h3>
                   <p className="text-sm text-purple-700 mb-3">
                     Get notified about new products, sales, and order updates.
                   </p>
@@ -310,6 +314,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
                   variant="ghost"
                   onClick={() => setNotificationPermission("denied")}
                   className="text-purple-600"
+                  aria-label="Close"
                 >
                   <X className="h-4 w-4" />
                 </Button>

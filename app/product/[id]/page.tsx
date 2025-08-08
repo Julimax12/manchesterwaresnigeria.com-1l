@@ -93,7 +93,7 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-      alert("Please select a size")
+      import("sonner").then(({ toast }) => toast.error("Please select a size"))
       return
     }
 
@@ -101,13 +101,7 @@ export default function ProductDetailPage() {
     setCart(newCart)
     localStorage.setItem("mufc-cart", JSON.stringify(newCart))
 
-    // Show success notification
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification("Added to Cart!", {
-        body: `${product.name} has been added to your cart`,
-        icon: "/icon-192x192.png",
-      })
-    }
+    import("sonner").then(({ toast }) => toast.success(`${product.name} added to cart`))
   }
 
   const handleToggleWishlist = () => {
@@ -116,6 +110,10 @@ export default function ProductDetailPage() {
     setWishlist(newWishlist)
     setIsWishlisted(!isWishlisted)
     localStorage.setItem("mufc-wishlist", JSON.stringify(newWishlist))
+
+    import("sonner").then(({ toast }) =>
+      isWishlisted ? toast("Removed from wishlist") : toast.success("Added to wishlist")
+    )
   }
 
   const handleQuantityChange = (change: number) => {
@@ -146,7 +144,7 @@ export default function ProductDetailPage() {
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href)
-      alert("Product link copied to clipboard!")
+      import("sonner").then(({ toast }) => toast.success("Product link copied to clipboard!"))
     }
   }
 
@@ -221,6 +219,7 @@ export default function ProductDetailPage() {
                     size="sm"
                     className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
                     onClick={() => handleImageNavigation("prev")}
+                    aria-label="Previous image"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
@@ -229,6 +228,7 @@ export default function ProductDetailPage() {
                     size="sm"
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
                     onClick={() => handleImageNavigation("next")}
+                    aria-label="Next image"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Button>
@@ -262,6 +262,7 @@ export default function ProductDetailPage() {
                       selectedImageIndex === index ? "border-red-600" : "border-gray-200 hover:border-gray-300"
                     }`}
                     onClick={() => setSelectedImageIndex(index)}
+                    aria-label={`View image ${index + 1}`}
                   >
                     <Image
                       src={image || "/placeholder.svg"}
@@ -309,7 +310,7 @@ export default function ProductDetailPage() {
                     {product.rating} ({product.reviewCount} reviews)
                   </span>
                 </div>
-                <Button variant="ghost" size="sm" onClick={shareProduct}>
+                <Button variant="ghost" size="sm" onClick={shareProduct} aria-label="Share product">
                   <Share2 className="h-4 w-4 mr-1" />
                   Share
                 </Button>
@@ -347,6 +348,7 @@ export default function ProductDetailPage() {
                         style={{ backgroundColor: color.hex }}
                         onClick={() => setSelectedColor(color.name)}
                         title={color.name}
+                        aria-label={`Select ${color.name} color`}
                       />
                     ))}
                   </div>
@@ -363,6 +365,7 @@ export default function ProductDetailPage() {
                       size="sm"
                       onClick={() => setShowSizeGuide(true)}
                       className="text-red-600 hover:text-red-700"
+                      aria-label="View size guide"
                     >
                       Size Guide
                     </Button>
@@ -378,6 +381,7 @@ export default function ProductDetailPage() {
                             : "hover:border-red-600 hover:text-red-600"
                         }`}
                         onClick={() => setSelectedSize(size)}
+                        aria-label={`Select size ${size}`}
                       >
                         {size}
                       </Button>
@@ -415,6 +419,7 @@ export default function ProductDetailPage() {
                 className="flex-1 bg-red-600 hover:bg-red-700"
                 onClick={handleAddToCart}
                 disabled={!product.stock || product.stock <= 0}
+                aria-label="Add to cart"
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
                 Add to Cart - {formatPrice(finalTotal)}
@@ -427,6 +432,7 @@ export default function ProductDetailPage() {
                 variant="outline"
                 onClick={handleToggleWishlist}
                 className={isWishlisted ? "text-red-600 border-red-600" : ""}
+                aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
               >
                 <Heart className={`h-5 w-5 ${isWishlisted ? "fill-current" : ""}`} />
               </Button>

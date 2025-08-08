@@ -8,6 +8,10 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
+    domains: [
+      "i.pinimg.com",
+      "hebbkx1anhila5yf.public.blob.vercel-storage.com",
+    ],
   },
 }
 
