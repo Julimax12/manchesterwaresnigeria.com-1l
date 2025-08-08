@@ -5,6 +5,8 @@ import "./globals.css"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PWAProvider } from "@/components/pwa-provider"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -42,13 +44,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <PWAProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-        </PWAProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <PWAProvider>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+            <Toaster richColors position="top-center" />
+          </PWAProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

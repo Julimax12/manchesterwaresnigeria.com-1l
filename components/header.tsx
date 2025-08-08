@@ -69,7 +69,7 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
+          <Link href="/" className="flex items-center space-x-3" aria-label="MUFC Nigeria Store home">
             <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo.png-RpUgUJav1RAaZmaqYnKWnaNwBItTVZ.webp"
               alt="Manchester United Logo"
@@ -84,7 +84,7 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-8" aria-label="Primary">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -101,10 +101,11 @@ export function Header() {
             {/* Search */}
             <div className="hidden lg:flex items-center">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" aria-hidden />
                 <Input
                   placeholder="Search products..."
                   className="pl-10 w-64 bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                  aria-label="Search products"
                 />
               </div>
             </div>
@@ -112,14 +113,14 @@ export function Header() {
             {/* PWA Install Indicator */}
             {!isInstalled && (
               <Link href="/pwa-info">
-                <Button variant="ghost" size="sm" className="text-white hover:text-red-400">
+                <Button variant="ghost" size="sm" className="text-white hover:text-red-400" aria-label="PWA info">
                   <Smartphone className="h-5 w-5" />
                 </Button>
               </Link>
             )}
 
             {/* Wishlist */}
-            <Button variant="ghost" size="sm" className="text-white hover:text-red-400 relative">
+            <Button variant="ghost" size="sm" className="text-white hover:text-red-400 relative" aria-label="Wishlist">
               <Heart className="h-5 w-5" />
               {wishlistCount > 0 && (
                 <Badge className="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-1 min-w-[1.25rem] h-5">
@@ -129,7 +130,7 @@ export function Header() {
             </Button>
 
             {/* Cart */}
-            <Button variant="ghost" size="sm" className="text-white hover:text-red-400 relative">
+            <Button variant="ghost" size="sm" className="text-white hover:text-red-400 relative" aria-label="Cart">
               <ShoppingCart className="h-5 w-5" />
               {cartCount > 0 && (
                 <Badge className="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-1 min-w-[1.25rem] h-5">
@@ -144,11 +145,11 @@ export function Header() {
             {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="md:hidden text-white">
+                <Button variant="ghost" size="sm" className="md:hidden text-white" aria-label="Open menu">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="bg-gray-900 text-white">
+              <SheetContent side="right" className="bg-gray-900 text-white" aria-label="Mobile menu">
                 <div className="flex flex-col space-y-4 mt-8">
                   {navigation.map((item) => (
                     <Link
@@ -163,6 +164,7 @@ export function Header() {
                     <Input
                       placeholder="Search products..."
                       className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                      aria-label="Search products"
                     />
                   </div>
                 </div>

@@ -5,7 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw } from "lucide-react"
+import { ShoppingCart, Heart, Star } from "lucide-react"
 import { products } from "@/lib/products-data"
 
 const featuredProducts = products.slice(0, 4)
@@ -41,55 +41,19 @@ const categories = [
 export default function HomePage() {
   const [cart, setCart] = useState<number[]>([])
   const [wishlist, setWishlist] = useState<number[]>([])
-  const [isOnline, setIsOnline] = useState(true)
-  const [showInstallPrompt, setShowInstallPrompt] = useState(false)
 
   useEffect(() => {
-    // Check online status
-    setIsOnline(navigator.onLine)
-
-    const handleOnline = () => setIsOnline(true)
-    const handleOffline = () => setIsOnline(false)
-
-    window.addEventListener("online", handleOnline)
-    window.addEventListener("offline", handleOffline)
-
-    // PWA install prompt
-    let deferredPrompt: any
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault()
-      deferredPrompt = e
-      setShowInstallPrompt(true)
-    }
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
-
-    // Load cart and wishlist from localStorage
     const savedCart = localStorage.getItem("mufc-cart")
     const savedWishlist = localStorage.getItem("mufc-wishlist")
 
     if (savedCart) setCart(JSON.parse(savedCart))
     if (savedWishlist) setWishlist(JSON.parse(savedWishlist))
-
-    return () => {
-      window.removeEventListener("online", handleOnline)
-      window.removeEventListener("offline", handleOffline)
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
-    }
   }, [])
 
   const addToCart = (productId: number) => {
     const newCart = [...cart, productId]
     setCart(newCart)
     localStorage.setItem("mufc-cart", JSON.stringify(newCart))
-
-    // Show notification
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification("Added to Cart!", {
-        body: "Item successfully added to your cart",
-        icon: "/icon-192x192.png",
-      })
-    }
   }
 
   const toggleWishlist = (productId: number) => {
@@ -99,17 +63,6 @@ export default function HomePage() {
 
     setWishlist(newWishlist)
     localStorage.setItem("mufc-wishlist", JSON.stringify(newWishlist))
-  }
-
-  const installPWA = async () => {
-    const deferredPrompt = (window as any).deferredPrompt
-    if (deferredPrompt) {
-      deferredPrompt.prompt()
-      const { outcome } = await deferredPrompt.userChoice
-      if (outcome === "accepted") {
-        setShowInstallPrompt(false)
-      }
-    }
   }
 
   const formatPrice = (price: number) => {
@@ -122,28 +75,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Offline Banner */}
-      {!isOnline && (
-        <div className="bg-yellow-500 text-white text-center py-2 px-4">
-          You're offline. Some features may be limited.
-        </div>
-      )}
-
-      {/* Install PWA Banner */}
-      {showInstallPrompt && (
-        <div className="bg-red-600 text-white text-center py-3 px-4 flex items-center justify-between">
-          <span>Install MUFC Store app for better experience!</span>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={installPWA}>
-              Install
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowInstallPrompt(false)}>
-              ×
-            </Button>
-          </div>
-        </div>
-      )}
-
       {/* Hero Section */}
       <section className="relative h-[500px] bg-gradient-to-r from-red-600 to-red-800 text-white">
         <div className="absolute inset-0 bg-black/30" />
@@ -152,6 +83,8 @@ export default function HomePage() {
           style={{
             backgroundImage: "url(https://i.pinimg.com/736x/dc/ac/67/dcac670b489dbbebc1cf46bbc60d95c0.jpg)",
           }}
+          role="img"
+          aria-label="Manchester United hero background"
         />
         <div className="relative z-10 container mx-auto px-4 h-full flex items-center justify-center text-center">
           <div className="max-w-3xl">
@@ -160,7 +93,7 @@ export default function HomePage() {
               Get authentic Manchester United merchandise delivered across Nigeria. Support the Red Devils with official
               gear and exclusive collections.
             </p>
-            <Link href="/catalog">
+            <Link href="/catalog" aria-label="Shop now in catalog">
               <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100 animate-fade-in-delay-2">
                 Shop Now
               </Button>
@@ -177,7 +110,7 @@ export default function HomePage() {
             {featuredProducts.map((product) => (
               <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <div className="relative overflow-hidden">
-                  <Link href={`/product/${product.id}`}>
+                  <Link href={`/product/${product.id}`} aria-label={`View ${product.name}`}>
                     <Image
                       src={product.images[0] || "/placeholder.svg"}
                       alt={product.name}
@@ -191,14 +124,15 @@ export default function HomePage() {
                     variant="ghost"
                     className="absolute top-2 right-2 bg-white/80 hover:bg-white"
                     onClick={() => toggleWishlist(product.id)}
+                    aria-label={wishlist.includes(product.id) ? "Remove from wishlist" : "Add to wishlist"}
                   >
                     <Heart className={`h-4 w-4 ${wishlist.includes(product.id) ? "fill-red-500 text-red-500" : ""}`} />
                   </Button>
                 </div>
                 <CardContent className="p-4">
                   <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
-                  <div className="flex items-center gap-1 mb-2">
-                    <div className="flex">
+                  <div className="flex items-center gap-1 mb-2" aria-label={`Rated ${product.rating} out of 5`}>
+                    <div className="flex" aria-hidden>
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
@@ -210,7 +144,7 @@ export default function HomePage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold text-red-600">{formatPrice(product.price)}</span>
-                    <Button size="sm" onClick={() => addToCart(product.id)} className="bg-red-600 hover:bg-red-700">
+                    <Button size="sm" onClick={() => addToCart(product.id)} className="bg-red-600 hover:bg-red-700" aria-label={`Add ${product.name} to cart`}>
                       <ShoppingCart className="h-4 w-4 mr-1" />
                       Add
                     </Button>
@@ -228,7 +162,7 @@ export default function HomePage() {
           <h2 className="text-4xl font-bold text-center mb-12">Shop by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {categories.map((category) => (
-              <Link key={category.name} href={category.href}>
+              <Link key={category.name} href={category.href} aria-label={`Browse ${category.name}`}>
                 <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer">
                   <div className="relative overflow-hidden">
                     <Image
@@ -249,35 +183,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Truck className="h-8 w-8 text-red-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Free Shipping</h3>
-              <p className="text-gray-600">Free delivery across all 36 states in Nigeria</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-8 w-8 text-red-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Authentic Guarantee</h3>
-              <p className="text-gray-600">100% genuine Manchester United merchandise</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <RotateCcw className="h-8 w-8 text-red-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">14-Day Returns</h3>
-              <p className="text-gray-600">Easy returns within 14 days of purchase</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-red-600 to-red-800 text-white">
         <div className="container mx-auto px-4 text-center">
@@ -285,7 +190,7 @@ export default function HomePage() {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Get exclusive offers and latest updates from Manchester United
           </p>
-          <Link href="/contact">
+          <Link href="/contact" aria-label="Go to contact page">
             <Button
               size="lg"
               variant="outline"

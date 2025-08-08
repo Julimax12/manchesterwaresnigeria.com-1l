@@ -126,7 +126,7 @@ export default function VerifyEmailPage() {
         setCanResend(false)
 
         // Show success message
-        alert("Verification code sent! Please check your email.")
+        import("sonner").then(({ toast }) => toast.success("Verification code sent! Please check your email."))
       } else {
         throw new Error("Failed to resend code")
       }

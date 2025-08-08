@@ -76,18 +76,19 @@ export default function BulkOrderPage() {
 
   const handleSubmitBulkOrder = () => {
     if (selectedItems.length === 0) {
-      alert("Please add items to your bulk order")
+      // replaced alert with toast for better UX
+      import("sonner").then(({ toast }) => toast.error("Please add items to your bulk order"))
       return
     }
 
     if (!customerInfo.organizationName || !customerInfo.contactName || !customerInfo.email) {
-      alert("Please fill in all required customer information")
+      import("sonner").then(({ toast }) => toast.error("Please fill in all required customer information"))
       return
     }
 
     // In a real app, you would submit this to your backend
     console.log("Bulk order submitted:", { selectedItems, customerInfo })
-    alert("Bulk order request submitted! We'll contact you within 24 hours with a custom quote.")
+    import("sonner").then(({ toast }) => toast.success("Bulk order request submitted! We'll contact you within 24 hours with a custom quote."))
   }
 
   return (
