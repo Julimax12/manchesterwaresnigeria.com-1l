@@ -140,6 +140,7 @@ async function cacheFirst(request, cacheName) {
   const response = await fetch(request)
   if (response.status === 200) {
     cache.put(request, response.clone())
+    await manageCacheSize(cacheName, cacheName === IMAGE_CACHE ? 50 : 100)
   }
 
   return response
@@ -158,6 +159,7 @@ async function cacheFirstWithFallback(request, cacheName, fallbackUrl) {
     const response = await fetch(request)
     if (response.status === 200) {
       cache.put(request, response.clone())
+      await manageCacheSize(cacheName, cacheName === IMAGE_CACHE ? 50 : 100)
     }
     return response
   } catch (error) {
@@ -173,6 +175,7 @@ async function networkFirstWithCache(request, cacheName) {
     const response = await fetch(request)
     if (response.status === 200) {
       cache.put(request, response.clone())
+      await manageCacheSize(cacheName, 100)
     }
     return response
   } catch (error) {
@@ -193,6 +196,7 @@ async function networkFirstWithOffline(request) {
     if (response.status === 200) {
       const cache = await caches.open(DYNAMIC_CACHE)
       cache.put(request, response.clone())
+      await manageCacheSize(DYNAMIC_CACHE, 100)
     }
 
     return response
@@ -218,6 +222,7 @@ async function staleWhileRevalidate(request, cacheName) {
     .then((response) => {
       if (response.status === 200) {
         cache.put(request, response.clone())
+        manageCacheSize(cacheName, cacheName === IMAGE_CACHE ? 50 : 100)
       }
       return response
     })
@@ -525,8 +530,4 @@ async function manageCacheSize(cacheName, maxItems = 100) {
   }
 }
 
-// Periodic cache cleanup
-setInterval(() => {
-  manageCacheSize(IMAGE_CACHE, 50)
-  manageCacheSize(DYNAMIC_CACHE, 100)
-}, 60000) // Every minute
+
