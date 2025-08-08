@@ -108,7 +108,7 @@ export default function HomePage() {
           <h2 className="text-4xl font-bold text-center mb-12">Featured Products</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {featuredProducts.map((product) => (
-              <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <Card key={product.id} className="transition-all duration-300">
                 <div className="relative overflow-hidden">
                   <Link href={`/product/${product.id}`} aria-label={`View ${product.name}`}>
                     <Image
@@ -116,7 +116,7 @@ export default function HomePage() {
                       alt={product.name}
                       width={300}
                       height={200}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-48 object-cover"
                     />
                   </Link>
                   <Button
@@ -163,18 +163,18 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {categories.map((category) => (
               <Link key={category.name} href={category.href} aria-label={`Browse ${category.name}`}>
-                <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+                <Card className="cursor-pointer">
                   <div className="relative overflow-hidden">
                     <Image
                       src={category.image || "/placeholder.svg"}
                       alt={category.name}
                       width={200}
                       height={150}
-                      className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-32 object-cover"
                     />
                   </div>
                   <CardContent className="p-4 text-center">
-                    <h3 className="font-semibold group-hover:text-red-600 transition-colors">{category.name}</h3>
+                    <h3 className="font-semibold">{category.name}</h3>
                   </CardContent>
                 </Card>
               </Link>
